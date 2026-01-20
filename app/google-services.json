@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "113839481550",
+    "project_id": "firenotesmultimodule",
+    "storage_bucket": "firenotesmultimodule.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113839481550:android:7b99c024248c0d4fa4e69f",
+        "android_client_info": {
+          "package_name": "com.shivam.firenotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuzuQ3ibQ6uQTN6JhFXfFs_TX7YtylnBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
