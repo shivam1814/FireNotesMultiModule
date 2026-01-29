@@ -68,10 +68,16 @@ class AuthRepoImpl(
     }
 
     override suspend fun logout() {
-        TODO("Not yet implemented")
+        firebaseAuth.signOut()
     }
 
     override suspend fun getCurrentsUser(): User? {
-        TODO("Not yet implemented")
+        return firebaseAuth.currentUser?.let {
+            User(
+                uid = it.uid,
+                email = it.email.orEmpty(),
+                displayName = it.displayName.orEmpty()
+            )
+        }
     }
 }
