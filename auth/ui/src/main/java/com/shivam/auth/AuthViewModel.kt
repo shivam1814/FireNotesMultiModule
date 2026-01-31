@@ -7,8 +7,10 @@ import com.shivam.auth.domain.useCase.RegisterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -17,6 +19,10 @@ class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
+
+
+    private var _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
 
     private var _email = MutableStateFlow("")
     val email = _email.asStateFlow()
@@ -41,24 +47,41 @@ class AuthViewModel @Inject constructor(
     }
 
     fun login() {
-        loginUseCase(_email.value, _password.value).onEach { result ->
-            result.onSuccess {
-
-            }.onFailure {
-
+        loginUseCase(_email.value, _password.value)
+            .onStart {
+                _isLoading.update { true }
             }
+            .onEach { result ->
+                _isLoading.update { false }
+                result.onSuccess {
 
-        }.launchIn(viewModelScope)
+                }.onFailure {
+
+                }
+            }
+            .catch {
+                _isLoading.update { false }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun register() {
-        registerUseCase(_email.value, _password.value).onEach { result ->
-            result.onSuccess {
-
-            }.onFailure {
-
+        registerUseCase(_email.value, _password.value)
+            .onStart {
+                _isLoading.update { true }
             }
-        }.launchIn(viewModelScope)
+            .onEach { result ->
+                _isLoading.update { false }
+                result.onSuccess {
+
+                }.onFailure {
+
+                }
+            }
+            .catch {
+                _isLoading.update { false }
+            }
+            .launchIn(viewModelScope)
     }
 
 

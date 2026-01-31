@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.dagger)
     id("kotlin-kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -84,4 +85,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.kapt)
+
+    implementation(libs.navigation.compose)
 }

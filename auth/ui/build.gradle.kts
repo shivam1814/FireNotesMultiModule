@@ -67,4 +67,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     kapt(libs.dagger.kapt)
 
+    implementation(libs.hilt.navigation.compose)
+
 }

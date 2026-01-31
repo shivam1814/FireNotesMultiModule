@@ -6,9 +6,10 @@ import com.shivam.auth.domain.repository.AuthRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@InstallIn
+@InstallIn(SingletonComponent::class)
 @Module
 object AuthDiModule {
 
@@ -18,6 +19,7 @@ object AuthDiModule {
         return FirebaseAuth.getInstance()
     }
 
+    @Provides
     fun provideAuthRepository(auth: FirebaseAuth) : AuthRepository {
         return AuthRepoImpl(auth)
     }
