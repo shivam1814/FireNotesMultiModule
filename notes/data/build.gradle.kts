@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.dagger)
+    id("kotlin-kapt")
 }
 
 android {
@@ -37,10 +40,25 @@ android {
 }
 
 dependencies {
+
+    implementation(platform(libs.firebase.bom))
+
+    implementation(project(":notes:domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.storage)
+
+    implementation(libs.dagger.hilt)
+    kapt(libs.dagger.kapt)
+
+
 }
