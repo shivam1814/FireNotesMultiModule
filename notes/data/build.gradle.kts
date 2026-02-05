@@ -52,9 +52,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.firebase.firestore.ktx)
+//    implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage.ktx)
+//    implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.storage)
 
     implementation(libs.dagger.hilt)

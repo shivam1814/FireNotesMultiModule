@@ -69,4 +69,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     kapt(libs.dagger.kapt)
 
+    implementation(libs.coil.compose)
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation(libs.hilt.navigation.compose)
+
+
 }
