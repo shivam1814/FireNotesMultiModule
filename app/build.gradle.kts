@@ -87,4 +87,6 @@ dependencies {
     kapt(libs.dagger.kapt)
 
     implementation(libs.navigation.compose)
+
+    implementation(libs.firebase.auth)
 }

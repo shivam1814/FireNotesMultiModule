@@ -14,13 +14,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.shivam.firenotes.navigation.AuthNavGraph
 import com.shivam.firenotes.navigation.BaseNavGraph
+import com.shivam.firenotes.navigation.NotesNavGraph
 import com.shivam.firenotes.ui.theme.FireNotesMultiModuleTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,9 +35,13 @@ class MainActivity : ComponentActivity() {
             FireNotesMultiModuleTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
-                    NavHost(navController, startDestination = AuthNavGraph.Dest.Root) {
+                    NavHost(
+                        navController,
+                        startDestination = if (firebaseAuth.currentUser == null) AuthNavGraph.Dest.Root else NotesNavGraph.Dest.Root
+                    ) {
                         listOf<BaseNavGraph>(
-                            AuthNavGraph
+                            AuthNavGraph,
+                            NotesNavGraph
                         ).forEach {
                             it.build(
                                 modifier = Modifier.padding(innerPadding),
