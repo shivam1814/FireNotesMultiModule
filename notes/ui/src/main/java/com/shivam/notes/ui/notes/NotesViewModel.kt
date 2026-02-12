@@ -10,7 +10,9 @@ import com.shivam.notes.domain.useCase.DeleteNoteUseCase
 import com.shivam.notes.domain.useCase.GetAllNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -26,35 +28,48 @@ class NotesViewModel @Inject constructor(
 
     private val _user = MutableStateFlow<User?>(null)
 
+    private val _notes = MutableStateFlow<List<Note>>(emptyList())
+    val notes: StateFlow<List<Note>> = _notes.asStateFlow()
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error.asStateFlow()
+
     init {
-        viewModelScope.launch {
-            _user.update {
-                getCurrentUserUseCase()
-            }
-        }
-        getNotes()
+        observeUserAndNotes()
     }
 
-    private val _notes = MutableStateFlow<List<Note>>(emptyList())
-    val notes = _notes.asStateFlow()
+    private fun observeUserAndNotes() {
+        viewModelScope.launch {
+            try {
+                _user.value = getCurrentUserUseCase()
 
+                val email = _user.value?.email.orEmpty()
+                if (email.isBlank()) {
+                    _error.value = "User not logged in"
+                    return@launch
+                }
 
-    fun getNotes() {
-        getAllNoteUseCase(_user.value?.email.orEmpty())
-            .onEach { result ->
-                _notes.update { result }
-            }.launchIn(viewModelScope)
+                getAllNoteUseCase(email)
+                    .catch { e ->
+                        _error.value = e.message
+                    }
+                    .collect { notes ->
+                        _notes.value = notes
+                    }
+
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
     }
 
     fun deleteNote(id: String) {
-        deleteNoteUseCase(id).onEach { result ->
-            result.onSuccess {
-
-                }
-                .onFailure {
-
-                }
-        }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            try {
+                deleteNoteUseCase(id)
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
     }
-
 }

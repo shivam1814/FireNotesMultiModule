@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,16 +27,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier) {
+fun AuthScreen(modifier: Modifier = Modifier , navigateToNoteNavGraph: () -> Unit) {
 
     val viewModel = hiltViewModel<AuthViewModel>()
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val email by viewModel.email.collectAsStateWithLifecycle()
     val password by viewModel.password.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val isLogin by viewModel.isLogin.collectAsStateWithLifecycle()
 
-    
+    LaunchedEffect(uiState) {
+        if(uiState.navigateToNoteNavGraph) {
+            navigateToNoteNavGraph()
+        }
+    }
+
     AuthScreenContent(
         modifier = modifier.fillMaxSize(),
         isLoading = isLoading,

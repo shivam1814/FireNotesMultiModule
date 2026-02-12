@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -20,6 +21,9 @@ class AuthViewModel @Inject constructor(
     private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
 
+
+    private val _uiState = MutableStateFlow(AuthUiState())
+    val uiState = _uiState.asStateFlow()
 
     private var _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -54,10 +58,13 @@ class AuthViewModel @Inject constructor(
             .onEach { result ->
                 _isLoading.update { false }
                 result.onSuccess {
-
+                    _uiState.update { it.copy(navigateToNoteNavGraph = true) }
                 }.onFailure {
 
                 }
+            }
+            .onCompletion {
+                _uiState.update { it.copy(navigateToNoteNavGraph = false) }
             }
             .catch {
                 _isLoading.update { false }
@@ -73,10 +80,13 @@ class AuthViewModel @Inject constructor(
             .onEach { result ->
                 _isLoading.update { false }
                 result.onSuccess {
-
+                    _uiState.update { it.copy(navigateToNoteNavGraph = true) }
                 }.onFailure {
 
                 }
+            }
+            .onCompletion {
+                _uiState.update { it.copy(navigateToNoteNavGraph = false) }
             }
             .catch {
                 _isLoading.update { false }

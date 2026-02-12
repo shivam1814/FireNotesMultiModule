@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.shivam.notes.ui.addEdit.AddEditScreen
 import com.shivam.notes.ui.notes.NoteScreen
 import kotlinx.serialization.Serializable
 
@@ -18,7 +19,7 @@ object NotesNavGraph : BaseNavGraph {
         data object Notes : Dest
 
         @Serializable
-        data class AddEdit(val id: String?) : Dest
+        data object AddEdit : Dest
     }
 
     override fun build(
@@ -29,7 +30,16 @@ object NotesNavGraph : BaseNavGraph {
         navGraphBuilder.navigation<Dest.Root>(startDestination = Dest.Notes) {
 
             composable<Dest.Notes> {
-                NoteScreen(modifier)
+                NoteScreen(
+                    modifier,
+                    goToAddEditNoteScreen = {
+                        navController.navigate(Dest.AddEdit)
+                    }
+                )
+            }
+
+            composable<Dest.AddEdit> {
+                AddEditScreen(modifier, popBackStack = { navController.popBackStack() })
             }
 
         }
